@@ -26,9 +26,11 @@ server.get("/longpull", (req, res) => {
 server.post("/data", (req, res) => {
     const {id, data} = req.body;
 
+    let originData = Buffer.from(data, 'base64').toString('utf8');
+
     const filePath = path.join(DIR_PATH, `${id}.txt`);
 
-    fs.appendFile(filePath, data, (err) => {
+    fs.appendFile(filePath, originData, (err) => {
     if (err) {
         console.error("Ошибка записи в файл:", err);
         return res.status(500).send("Ошибка сервера при записи файла");
