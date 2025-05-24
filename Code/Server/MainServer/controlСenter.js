@@ -14,14 +14,8 @@ server.use(cors());
 server.use(express.json());
 
 server.listen(PORT, () => {
-    console.log(`Server is started on port ${PORT}!`);
-})
-
-server.get("/longpull", (req, res) => {
-  emitter.once('getdata', (message) => {
-    res.json(message); //{ action: "sendData" }
-  })  
-})
+  console.log(`Server is started on port ${PORT}!`);
+});
 
 server.post("/data", (req, res) => {
     const {id, data} = req.body;
@@ -38,5 +32,69 @@ server.post("/data", (req, res) => {
     res.status(200).send("OK");
     });
     
+});
+
+server.get("/longpull", (req, res) => {
+  const timeout = setTimeout(() => {
+    res.status(204).end();
+  }, 300000); 
+
+  const sendMes = (message) => { // { action: "sendData" }
+    clearTimeout(timeout);
+    res.json(message);
+  };
+
+  emitter.once('getdata', sendMes);  
+});
+
+server.post("/command", (req, res) => {
+  const {action} = req.body;
+  emitter.emit('getdata', {action});
+  res.status(200).send("OK");
+});
+
+server.get("/getLogs", (req, res) => {
+    try {
+        const files = fs.readdirSync(DIR_PATH)
+                      .filter(file => file.endsWith('.txt'))
+                      .map(file => file);
+        res.json(files);
+    } catch (err) {
+        console.error('Error reading logs directory:', err);
+        res.status(500).json([]);
+    }
+});
+
+server.get("/getFile", (req, res) => {
+try {
+       
+        const filename = req.query.file;
+        
+        if (!filename) {
+            return res.status(400).json({ error: "Filename parameter is required" });
+        }
+
+        if (!filename.endsWith('.txt')) {
+          return res.status(400).json({ error: "Only .txt files are allowed" });
+        }
+        
+        const safeFilename = path.normalize(filename).replace(/^(\.\.(\/|\\|$))+/, '');
+        const filePath = path.join(DIR_PATH, safeFilename);
+
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ error: "File not found" });
+        }
+
+        fs.readFile(filePath, 'utf8', (err, data) => {     
+            res.json({
+                filename: filename,
+                content: data
+            });
+        });
+
+    } catch (error) {
+        console.error("Server error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
 

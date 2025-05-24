@@ -1,0 +1,161 @@
+/* Counter.module.css */
+.container {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 20px;
+  margin-right: 270px; /* Ширина сайдбара + отступ */
+}
+
+.sidebar {
+  width: 250px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #2c3e50;
+  padding: 20px;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  border-left: 1px solid #1a2634;
+  overflow-y: auto;
+}
+
+.title {
+  color: #343a40;
+  margin-bottom: 20px;
+}
+
+.deviceList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.deviceItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 8px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.deviceName {
+  font-size: 14px;
+  color: #495057;
+}
+
+.refreshButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 16px;
+  transition: color 0.2s;
+}
+
+.refreshButton:hover {
+  color: #007bff;
+}
+
+.refreshAllButton {
+  width: 100%;
+  padding: 8px;
+  margin-top: 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.refreshAllButton:hover {
+  background-color: #218838;
+}
+
+.loading {
+  text-align: center;
+  color: #6c757d;
+}
+
+.empty {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.deviceName {
+  font-size: 14px;
+  color: #495057;
+  transition: all 0.2s;
+}
+
+.deviceName:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.deviceName.active {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.deviceContent {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #dee2e6;
+}
+
+.contentPlaceholder {
+  padding: 15px;
+  background-color: white;
+  border-radius: 4px;
+  margin-top: 10px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.fileInfo {
+    padding: 8px;
+    background-color: #e9ecef;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 14px;
+    color: #495057;
+}
+
+/* Эффект "слияния" с краем браузера */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+  .mainContent {
+    margin-right: 0;
+    padding-bottom: 60px;
+  }
+  
+  .sidebar {
+    width: 100%;
+    bottom: 0;
+    top: auto;
+    height: 50px;
+    padding: 10px;
+  }
+}
