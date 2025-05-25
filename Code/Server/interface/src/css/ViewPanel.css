@@ -1,15 +1,12 @@
-/* ViewPanel.css */
 .viewPanel {
   position: relative;
-  margin-top: 20px;
+  margin-top: 5px;
   border: 1px solid #a3b5bb;
   border-radius: 8px;
   overflow: hidden;
   background-color: #ffffff;
   width: calc(100% - 20px);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  
-
   max-height: calc(100vh - 140px); 
   min-height: 200px; 
   
@@ -27,7 +24,9 @@
 }
 
 .logContent {
+  
   padding: 16px;
+  padding-top: 0px;
   overflow-y: auto; 
   flex-grow: 1; 
   font-family: 'Courier New', monospace;
@@ -46,7 +45,6 @@
   .viewPanel {
     width: 100%;
     flex: 1;
-    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
     height: auto;

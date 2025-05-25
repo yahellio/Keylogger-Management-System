@@ -35,17 +35,26 @@ server.post("/data", (req, res) => {
 });
 
 server.get("/longpull", (req, res) => {
+  let sent = false;
+
   const timeout = setTimeout(() => {
-    res.status(204).end();
+    if (!sent) {
+      sent = true;
+      res.status(204).end();
+    }
   }, 300000); 
 
-  const sendMes = (message) => { // { action: "sendData" }
-    clearTimeout(timeout);
-    res.json(message);
+  const sendMes = (message) => {
+    if (!sent) {
+      sent = true;
+      clearTimeout(timeout);
+      res.json(message);
+    }
   };
 
   emitter.once('getdata', sendMes);  
 });
+
 
 server.post("/command", (req, res) => {
   const {action} = req.body;

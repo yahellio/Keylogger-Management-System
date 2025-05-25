@@ -8,7 +8,26 @@ const MainPanel = () => {
     const [devices, setDevices] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedDevice, setSelectedDevice] = useState(null);
-    const [fileContent, setFileContent] = useState(null);
+    const [fileContent, setFileContent] = useState("Select a device to view its log");
+
+    const highlightProgramNames = (logText) => {
+        if (!logText) return '';
+
+        const programBlocks = logText
+            .trim()
+            .split(/(?=\[Program:)/g)  
+
+        const reversedBlocks = programBlocks.reverse();
+
+        let trimmedText = reversedBlocks.join('<hr>');
+        trimmedText = trimmedText.replace(/\n\s*\n+/g, '');
+      
+        return trimmedText.replace(/\[Program:[^\]]*\]/g, (match) => {
+            const innerText = match.slice(1, -1); 
+            return `<strong>${innerText}</strong><br>`;
+        });
+    };
+
 
     const fetchDevices = async () => {
         setIsLoading(true);
@@ -24,7 +43,7 @@ const MainPanel = () => {
         } finally {
             setIsLoading(false);
         }
-        if (devices[0]) setSelectedDevice(devices[0]);
+       
     };
 
     const refreshAll = async () => {
@@ -62,14 +81,17 @@ const MainPanel = () => {
             <main className="mainContent">
                 <Header />
                 
-                <ViewPanel>
-                {fileContent && (
+                <ViewPanel header={
+                        fileContent !== "Select a device to view its log"
+                        ? `Viewing: ${selectedDevice?.name} (last updated: ${new Date().toLocaleTimeString()})`
+                        : undefined
+                }>
+                {(
                     <>
-                        <div className="fileInfo">
-                            Viewing: {selectedDevice?.name} (last updated: {new Date().toLocaleTimeString()})
-                        </div>
-                       
-                        {fileContent}
+                        <pre 
+                        className="logContent"
+                        dangerouslySetInnerHTML={{ __html: highlightProgramNames(fileContent) }}
+                        />
                     </>
                 )}
                 </ViewPanel>

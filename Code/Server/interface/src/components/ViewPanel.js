@@ -1,15 +1,15 @@
 import React from 'react';
 import '../css/ViewPanel.css';
 
-const ViewPanel = ({ children }) => {
+const ViewPanel = ({ header, children }) => {
     return (
         <div className="viewPanel">
             <div className="panelHeader">
-                <h3>Logs</h3>
+                <h3>{header || "Logs"}</h3>
             </div>
-            <pre className="logContent">
-                {children || <span className="emptyLog">Select a device to view its log</span>}
-            </pre>
+        
+            {children}
+            
         </div>
     );
 };

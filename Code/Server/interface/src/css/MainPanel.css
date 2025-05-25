@@ -23,7 +23,7 @@
   padding: 20px;
   box-shadow: -2px 0 15px rgba(0, 77, 71, 0.2);
   z-index: 100;
-  border-left: 1px solid #128277;
+  
   overflow-y: auto;
   transition: all 0.3s ease;
 }
@@ -168,7 +168,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding-bottom: 280px; 
+    padding-bottom: 270px; 
   }
   
   .sidebar {
@@ -177,11 +177,12 @@
     top: auto;
     height: auto;
     padding: 15px;
-    margin-top: 20px;
+    padding-top: 0px;
 
+    max-height: 250px;
+    overflow-y: auto;
   }
 }
-/* Добавьте эти стили в MainPanel.css */
 
 .deviceItem.active {
   background-color: #004d47;
@@ -228,7 +229,6 @@
   }
 }
 
-/* Улучшаем hover для неактивных элементов */
 .deviceItem:not(.active):hover {
   background-color: #006d65;
   box-shadow: 0 0 8px rgba(0, 109, 101, 0.5);
