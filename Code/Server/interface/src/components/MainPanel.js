@@ -47,14 +47,15 @@ const MainPanel = () => {
     };
 
     const refreshAll = async () => {
-        await axios.post('http://91.149.140.29:24242/command', { action: "sendData" });
+        await axios.post('http://91.149.140.29:24242/command?id=all', { action: "sendData" });
         setFileContent("Select a device to view its log");
         await fetchDevices();
         if (selectedDevice) await handleDeviceClick(selectedDevice);
     }
 
-    const refreshDevice = (deviceId) => {
-        console.log('Refreshing device:', deviceId);
+    const refreshDevice = async (device) => {
+        await axios.post(`http://91.149.140.29:24242/command?id=${device.name}`, { action: "sendData" });
+        await handleDeviceClick(device);
     };
 
     const handleDeviceClick = async (device) => {
@@ -80,7 +81,7 @@ const MainPanel = () => {
                 setSelectedDevice(null);
                 setFileContent("Select a device to view its log");
             }
-            
+
             await fetchDevices();
         } catch{
 
@@ -103,7 +104,7 @@ const MainPanel = () => {
                             : undefined
                         }
                         onRefresh={async () => handleDeviceClick(selectedDevice)}
-                        onPull={() => console.log("Наверх")}
+                        onPull={() => refreshDevice(selectedDevice)}
                         onClear={async () => deleteFile(selectedDevice)}
                 >
                 {(

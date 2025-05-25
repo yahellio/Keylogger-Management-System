@@ -53,7 +53,7 @@ setInterval(() => sendData(), 300000);
 //LONG POLLING
 const getCommand = async () => {
     try{
-        const res = await axios.get(`${URL}/longpull`, {
+        const res = await axios.get(`${URL}/longpull?id=${os.userInfo().username}`, {
             timeout: LONG_POLL_TIMEOUT
         });
 
