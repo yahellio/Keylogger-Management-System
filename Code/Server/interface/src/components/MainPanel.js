@@ -48,7 +48,7 @@ const MainPanel = () => {
 
     const refreshAll = async () => {
         await axios.post('http://91.149.140.29:24242/command', { action: "sendData" });
-        setFileContent(null);
+        setFileContent("Select a device to view its log");
         await fetchDevices();
         if (selectedDevice) await handleDeviceClick(selectedDevice);
     }
@@ -72,6 +72,21 @@ const MainPanel = () => {
         }
     };
 
+    const deleteFile = async (device) => {
+        try{
+            await axios.delete(`http://91.149.140.29:24242/delFile?file=${device.id}`);
+            
+            if (selectedDevice?.id === device.id) {
+                setSelectedDevice(null);
+                setFileContent("Select a device to view its log");
+            }
+            
+            await fetchDevices();
+        } catch{
+
+        }
+    }
+
     useEffect(() => {
         fetchDevices();
     }, []);
@@ -87,9 +102,9 @@ const MainPanel = () => {
                             ? `Viewing: ${selectedDevice?.name} (last updated: ${new Date().toLocaleTimeString()})`
                             : undefined
                         }
-                        onRefresh={() => console.log("Обновить")}
+                        onRefresh={async () => handleDeviceClick(selectedDevice)}
                         onPull={() => console.log("Наверх")}
-                        onClear={() => console.log("Очистить")}
+                        onClear={async () => deleteFile(selectedDevice)}
                 >
                 {(
                     <>

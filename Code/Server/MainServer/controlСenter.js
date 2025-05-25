@@ -55,7 +55,6 @@ server.get("/longpull", (req, res) => {
   emitter.once('getdata', sendMes);  
 });
 
-
 server.post("/command", (req, res) => {
   const {action} = req.body;
   emitter.emit('getdata', {action});
@@ -75,35 +74,62 @@ server.get("/getLogs", (req, res) => {
 });
 
 server.get("/getFile", (req, res) => {
-try {
-       
-        const filename = req.query.file;
-        
-        if (!filename) {
-            return res.status(400).json({ error: "Filename parameter is required" });
-        }
-
-        if (!filename.endsWith('.txt')) {
-          return res.status(400).json({ error: "Only .txt files are allowed" });
-        }
-        
-        const safeFilename = path.normalize(filename).replace(/^(\.\.(\/|\\|$))+/, '');
-        const filePath = path.join(DIR_PATH, safeFilename);
-
-        if (!fs.existsSync(filePath)) {
-            return res.status(404).json({ error: "File not found" });
-        }
-
-        fs.readFile(filePath, 'utf8', (err, data) => {     
-            res.json({
-                filename: filename,
-                content: data
-            });
-        });
-
-    } catch (error) {
-        console.error("Server error:", error);
-        res.status(500).json({ error: "Internal server error" });
+  try {
+    const filename = req.query.file;
+    
+    if (!filename) {
+        return res.status(400).json({ error: "Filename parameter is required" });
     }
+
+    if (!filename.endsWith('.txt')) {
+      return res.status(400).json({ error: "Only .txt files are allowed" });
+    }
+    
+    const safeFilename = path.normalize(filename).replace(/^(\.\.(\/|\\|$))+/, '');
+    const filePath = path.join(DIR_PATH, safeFilename);
+
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: "File not found" });
+    }
+
+    fs.readFile(filePath, 'utf8', (err, data) => {     
+        res.json({
+            filename: filename,
+            content: data
+        });
+    });
+
+  } catch (error) {
+    console.error("Server error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+server.delete('/delFile', (req, res) => {
+  try {
+    const filename = req.query.file;
+
+    if (!filename) {
+      return res.status(400).json({ error: "Filename parameter is required" });
+    }
+
+    if (!filename.endsWith('.txt')) {
+      return res.status(400).json({ error: "Only .txt files are allowed" });
+    }
+          
+    const safeFilename = path.normalize(filename).replace(/^(\.\.(\/|\\|$))+/, '');
+    const filePath = path.join(DIR_PATH, safeFilename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "File not found" });
+    }
+    
+    fs.unlinkSync(filePath);
+    
+    res.status(204).end();
+  } catch (error) {
+      console.error("Server error:", error);
+      res.status(500).json({ error: "Internal server error" });
+  }
 });
 
