@@ -47,14 +47,14 @@ const MainPanel = () => {
     };
 
     const refreshAll = async () => {
-        await axios.post('http://91.149.140.29:24242/command?id=all', { action: "sendData" });
+        await axios.post('http://91.149.140.29:24242/command', {clientId: "all", action: "sendData" });
         setFileContent("Select a device to view its log");
         await fetchDevices();
         if (selectedDevice) await handleDeviceClick(selectedDevice);
     }
 
     const refreshDevice = async (device) => {
-        await axios.post(`http://91.149.140.29:24242/command?id=${device.name}`, { action: "sendData" });
+        await axios.post(`http://91.149.140.29:24242/command`, {clientId: device.name, action: "sendData" });
         await handleDeviceClick(device);
     };
 
