@@ -81,11 +81,16 @@ const MainPanel = () => {
             <main className="mainContent">
                 <Header />
                 
-                <ViewPanel header={
-                        fileContent !== "Select a device to view its log"
-                        ? `Viewing: ${selectedDevice?.name} (last updated: ${new Date().toLocaleTimeString()})`
-                        : undefined
-                }>
+                <ViewPanel 
+                        header={
+                            fileContent !== "Select a device to view its log"
+                            ? `Viewing: ${selectedDevice?.name} (last updated: ${new Date().toLocaleTimeString()})`
+                            : undefined
+                        }
+                        onRefresh={() => console.log("Обновить")}
+                        onPull={() => console.log("Наверх")}
+                        onClear={() => console.log("Очистить")}
+                >
                 {(
                     <>
                         <pre 

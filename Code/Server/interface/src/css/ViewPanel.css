@@ -63,3 +63,32 @@
 
   
 }
+
+.panelHeader {
+  padding: 0px 16px;
+  background-color: #004d47;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.headerButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.headerBtn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.headerBtn:hover {
+  color: #64ffda;
+  transform: scale(1.2);
+}
