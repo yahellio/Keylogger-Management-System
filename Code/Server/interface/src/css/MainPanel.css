@@ -1,14 +1,16 @@
-/* Counter.module.css */
+/* MainPanel.css */
 .container {
   display: flex;
   min-height: 100vh;
   position: relative;
+  background-color: #b9c4c9; /* Фон цвета тумана */
+  color: #2a2a2a; /* Темный текст для контраста */
 }
 
 .mainContent {
   flex: 1;
   padding: 20px;
-  margin-right: 270px; /* Ширина сайдбара + отступ */
+  margin-right: 230px;
 }
 
 .sidebar {
@@ -17,17 +19,23 @@
   right: 0;
   top: 0;
   bottom: 0;
-  background-color: #2c3e50;
+  background-color: #52958b; /* Основной цвет панели */
   padding: 20px;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: -2px 0 15px rgba(0, 77, 71, 0.2);
   z-index: 100;
-  border-left: 1px solid #1a2634;
+  border-left: 1px solid #128277;
   overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+.sidebar:hover {
+  box-shadow: -2px 0 20px rgba(0, 77, 71, 0.3);
 }
 
 .title {
-  color: #343a40;
+  color: #ffffff;
   margin-bottom: 20px;
+  font-weight: 500;
 }
 
 .deviceList {
@@ -40,100 +48,91 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  margin-bottom: 8px;
-  background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 12px;
+  margin-bottom: 10px;
+  background-color: #128277; 
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+.deviceItem.active {
+  background-color: #004d47; 
+  transform: translateX(-5px);
+}
+
+.deviceItem:hover {
+  transform: translateX(-5px);
+  background-color: #006d65; 
 }
 
 .deviceName {
   font-size: 14px;
-  color: #495057;
+  color: #ffffff;
+  transition: all 0.3s ease; 
 }
 
 .refreshButton {
   background: none;
   border: none;
   cursor: pointer;
-  color: #6c757d;
+  color: #ffffff;
   font-size: 16px;
-  transition: color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .refreshButton:hover {
-  color: #007bff;
+  color: #d4edeb;
+  transform: rotate(360deg);
 }
 
 .refreshAllButton {
   width: 100%;
-  padding: 8px;
+  padding: 12px;
   margin-top: 20px;
-  background-color: #28a745;
+  background-color: #004d47;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 .refreshAllButton:hover {
-  background-color: #218838;
+  background-color: #003833;
+  transform: translateY(-2px);
 }
 
-.loading {
+.loading, .empty {
   text-align: center;
-  color: #6c757d;
-}
-
-.empty {
-  text-align: center;
-  color: #6c757d;
-  font-style: italic;
-}
-
-.deviceName {
-  font-size: 14px;
-  color: #495057;
-  transition: all 0.2s;
-}
-
-.deviceName:hover {
-  color: #007bff;
-  text-decoration: underline;
+  color: #ffffff;
 }
 
 .deviceName.active {
   font-weight: bold;
-  color: #007bff;
+  color: #d4edeb;
 }
 
-.deviceContent {
-  margin-top: 20px;
+.deviceContent, .contentPlaceholder {
   padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 5px;
-  border: 1px solid #dee2e6;
-}
-
-.contentPlaceholder {
-  padding: 15px;
-  background-color: white;
-  border-radius: 4px;
+  background-color: #ffffff;
+  border-radius: 6px;
   margin-top: 10px;
-  color: #6c757d;
-  font-style: italic;
+  color: #2a2a2a;
+  border: 1px solid #d1d9dd;
 }
 
 .fileInfo {
-    padding: 8px;
-    background-color: #e9ecef;
-    border-bottom: 1px solid #dee2e6;
+    padding: 10px;
+    background-color: #128277;
+    border-bottom: 1px solid #52958b;
     font-size: 14px;
-    color: #495057;
+    color: #ffffff;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: 15px;
 }
 
-/* Эффект "слияния" с краем браузера */
 .sidebar::before {
   content: '';
   position: absolute;
@@ -141,21 +140,96 @@
   top: 0;
   bottom: 0;
   width: 5px;
-  background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+  background: linear-gradient(to right, rgba(82, 149, 139, 0.3), transparent);
 }
 
-/* Адаптация для мобильных устройств */
+@keyframes pulse {
+  0% { box-shadow: 0 0 5px rgba(82, 149, 139, 0.5); }
+  50% { box-shadow: 0 0 15px rgba(82, 149, 139, 0.8); }
+  100% { box-shadow: 0 0 5px rgba(82, 149, 139, 0.5); }
+}
+
+.active {
+  animation: pulse 2s infinite;
+}
+
 @media (max-width: 768px) {
+
+  .container {
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
   .mainContent {
-    margin-right: 0;
-    padding-bottom: 60px;
+    flex: 1;
+    margin: 0;
+    padding: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 280px; 
   }
   
   .sidebar {
     width: 100%;
     bottom: 0;
     top: auto;
-    height: 50px;
-    padding: 10px;
+    height: auto;
+    padding: 15px;
+    margin-top: 20px;
+
   }
+}
+/* Добавьте эти стили в MainPanel.css */
+
+.deviceItem.active {
+  background-color: #004d47;
+  border-left: 4px solid #64ffda; /* Яркая аквамариновая граница */
+  transform: translateX(-5px);
+  position: relative;
+  z-index: 1;
+}
+
+.deviceItem.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(18, 130, 119, 0.8), rgba(100, 255, 218, 0.4));
+  z-index: -1;
+  animation: activeGlow 2s infinite alternate;
+}
+
+.deviceItem.active::after {
+  content: '→';
+  position: absolute;
+  right: 15px;
+  color: #64ffda;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(100, 255, 218, 0.7);
+}
+
+.deviceName.active {
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes activeGlow {
+  0% {
+    box-shadow: 0 0 8px rgba(100, 255, 218, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(100, 255, 218, 0.7);
+  }
+}
+
+/* Улучшаем hover для неактивных элементов */
+.deviceItem:not(.active):hover {
+  background-color: #006d65;
+  box-shadow: 0 0 8px rgba(0, 109, 101, 0.5);
 }

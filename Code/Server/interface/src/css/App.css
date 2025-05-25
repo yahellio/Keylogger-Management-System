@@ -1,0 +1,29 @@
+/* Глобальные стили */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #b9c4c9; /* Основной фон цвета тумана */
+  overflow-x: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #b9c4c9; /* Дублируем на случай, если компонент перекрывает body */
+}
+
+@media (max-width: 768px) {
+    body, html {
+        overflow: hidden;
+
+    }
+}

@@ -42,6 +42,10 @@ const MainPanel = () => {
         setSelectedDevice(device);
         try {
             const response = await axios.get(`http://91.149.140.29:24242/getFile?file=${device.id}`);
+            if(response.data.content === ""){
+                setFileContent("Empty log");
+                return;
+            }
             setFileContent(response.data.content);
         } catch (error) {
             console.error('Error loading file content:', error);
@@ -64,6 +68,7 @@ const MainPanel = () => {
                         <div className="fileInfo">
                             Viewing: {selectedDevice?.name} (last updated: {new Date().toLocaleTimeString()})
                         </div>
+                       
                         {fileContent}
                     </>
                 )}
@@ -73,7 +78,7 @@ const MainPanel = () => {
             <aside className="sidebar">
                 <h2 className="title">{devices.length} Connected Devices
                     <button className="refreshButton" onClick={fetchDevices} disabled={isLoading} title="Refresh devices">
-                        {isLoading ? 'Refreshing...' : '⟳'}
+                        {isLoading ? '' : '⟳'}
                     </button>
                 </h2>
             
@@ -84,23 +89,15 @@ const MainPanel = () => {
                 ) : (
                     <ul className="deviceList">
                         {devices.map(device => (
-                            <li key={device.id} className="deviceItem">
-                                <span 
-                                    className={`deviceName ${selectedDevice?.id === device.id ? 'active' : ''}`}
-                                    onClick={() => handleDeviceClick(device)}
-                                    style={{cursor: 'pointer'}}
-                                >
+                          <li 
+                                key={device.id} 
+                                className={`deviceItem ${selectedDevice?.id === device.id ? 'active' : ''}`}
+                                onClick={() => handleDeviceClick(device)}
+                                style={{cursor: 'pointer'}}
+                            >
+                                <span className="deviceName">
                                     {device.name}
                                 </span>
-                                {/*
-                                <button 
-                                    className="refreshButton"
-                                    onClick={() => refreshDevice(device.id)}
-                                    title="Refresh device"
-                                >
-                                    ⟳
-                                </button>
-                                */}
                             </li>
                         ))}
                     </ul>
