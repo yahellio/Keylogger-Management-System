@@ -34,6 +34,8 @@ server.post("/data", (req, res) => {
     
 });
 
+emitter.setMaxListeners(50); 
+
 server.get("/longpull", (req, res) => {
   const clientId = req.query.id;
   if (!clientId) return res.status(400).json({ error: "Client ID is required" });
