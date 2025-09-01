@@ -25,4 +25,4 @@ A full-stack system for remote data collection and management from keyboard clie
     *   View logs from each device
     *   Remote device management
 *   **Security:**
-    *   Bypassing Antivirus with Low-Level Hooks
+    *   Focus on system integration and avoiding detection
