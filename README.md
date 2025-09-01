@@ -24,8 +24,7 @@ A full-stack system for remote data collection and management from keyboard clie
     *   List of connected devices
     *   View logs from each device
     *   Remote device management
-*   **Cross-Platform Dashboard:**
-    *   Fully responsive design with mobile support
+    *   **Fully responsive design** with mobile support
 *   **Security:**
     *   Focus on system integration and avoiding detection
 
