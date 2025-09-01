@@ -24,5 +24,18 @@ A full-stack system for remote data collection and management from keyboard clie
     *   List of connected devices
     *   View logs from each device
     *   Remote device management
+*   **Cross-Platform Dashboard:**
+    *   Fully responsive design with mobile support
 *   **Security:**
     *   Focus on system integration and avoiding detection
+
+## 📱 View
+
+### Desktop Interface
+<img width="866" height="431" alt="Desktop Interface" src="https://github.com/user-attachments/assets/3ba2cfc0-4bd9-4694-aa5f-ccae5ead1dbc" />
+
+### Mobile Interface  
+<img width="321" height="576" alt="Mobile Interface" src="https://github.com/user-attachments/assets/bdd0c778-cf3a-4841-9b53-b28b6438bf48" />
+
+
+
