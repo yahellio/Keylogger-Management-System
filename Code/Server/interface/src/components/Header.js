@@ -4,7 +4,7 @@ import '../css/Header.css';
 const Header = () => {
     return (
         <header className="mainHeader">
-            <h1>CENTRAL CONTROL PANEL</h1>
+            <h1>CONTROL PANEL</h1>
     
         </header>
     );

@@ -55,6 +55,7 @@ const MainPanel = () => {
 
     const refreshDevice = async (device) => {
         await axios.post(`http://91.149.140.24:24242/command`, {clientId: device.name, action: "sendData" });
+        await new Promise(resolve => setTimeout(resolve, 1000));
         await handleDeviceClick(device);
     };
 

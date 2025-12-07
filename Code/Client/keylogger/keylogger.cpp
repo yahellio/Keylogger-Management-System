@@ -293,7 +293,7 @@ int Save(int key){
             char* utf8_str = new char[utf8_len];
             WideCharToMultiByte(CP_UTF8, 0, wstr, -1, utf8_str, utf8_len, NULL, NULL);
 
-            file << "\n\n\n[Program: " << utf8_str << " Date" << c << "]";
+            file << "\n\n\n[Program: " << utf8_str << " | Date: " << c << "]";
 
             delete[] wstr;
             delete[] utf8_str;
