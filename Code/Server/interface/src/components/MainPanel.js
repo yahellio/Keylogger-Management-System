@@ -32,7 +32,7 @@ const MainPanel = () => {
     const fetchDevices = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get('http://91.149.140.29:24242/getLogs');
+            const response = await axios.get('http://91.149.140.24:24242/getLogs');
             setDevices(response.data.map(file => ({
                 id: file,
                 name: file.replace('.txt', '')
@@ -47,21 +47,21 @@ const MainPanel = () => {
     };
 
     const refreshAll = async () => {
-        await axios.post('http://91.149.140.29:24242/command', {clientId: "all", action: "sendData" });
+        await axios.post('http://91.149.140.24:24242/command', {clientId: "all", action: "sendData" });
         setFileContent("Select a device to view its log");
         await fetchDevices();
         if (selectedDevice) await handleDeviceClick(selectedDevice);
     }
 
     const refreshDevice = async (device) => {
-        await axios.post(`http://91.149.140.29:24242/command`, {clientId: device.name, action: "sendData" });
+        await axios.post(`http://91.149.140.24:24242/command`, {clientId: device.name, action: "sendData" });
         await handleDeviceClick(device);
     };
 
     const handleDeviceClick = async (device) => {
         setSelectedDevice(device);
         try {
-            const response = await axios.get(`http://91.149.140.29:24242/getFile?file=${device.id}`);
+            const response = await axios.get(`http://91.149.140.24:24242/getFile?file=${device.id}`);
             if(response.data.content === ""){
                 setFileContent("Empty log");
                 return;
@@ -75,7 +75,7 @@ const MainPanel = () => {
 
     const deleteFile = async (device) => {
         try{
-            await axios.delete(`http://91.149.140.29:24242/delFile?file=${device.id}`);
+            await axios.delete(`http://91.149.140.24:24242/delFile?file=${device.id}`);
             
             if (selectedDevice?.id === device.id) {
                 setSelectedDevice(null);
